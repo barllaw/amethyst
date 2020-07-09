@@ -5832,23 +5832,13 @@
       return t.element;
     });
   }, d;
-}); //	Slider Slick
-
+});
 $(document).ready(function () {
+  //	Slider Slick
   $('.header-slider').slick({
     arrows: true,
     dots: true,
     slidesToShow: 1,
-    autoplay: true,
-    speed: 500,
-    autoplaySpeed: 2000,
-    touchThreshold: 15
-  });
-  $('.testimonials-slider').slick({
-    arrows: true,
-    dots: true,
-    slidesToShow: 5,
-    slidesToScroll: 3,
     autoplay: true,
     speed: 500,
     autoplaySpeed: 2000,
@@ -5863,60 +5853,162 @@ $(document).ready(function () {
     speed: 500,
     autoplaySpeed: 2000,
     touchThreshold: 15
-  });
-}); //	Filter
-// init Isotope
+  }); //mobile Slick
 
-var $grid = $('.grids').isotope({
-  itemSelector: '.works-item',
-  layoutMode: 'fitRows'
-}); // filter functions
+  if (window.screen.width > 1024) {
+    $('.testimonials-slider').slick({
+      arrows: true,
+      dots: true,
+      slidesToShow: 5,
+      slidesToScroll: 3,
+      autoplay: true,
+      speed: 500,
+      autoplaySpeed: 2000,
+      touchThreshold: 15
+    });
+  } else {
+    $('.testimonials-slider').slick({
+      arrows: false,
+      dots: true,
+      slidesToShow: 3,
+      slidesToScroll: 3,
+      autoplay: true,
+      speed: 500,
+      autoplaySpeed: 2000,
+      touchThreshold: 15
+    });
+  } // mobile menu
 
-var filterFns = {
-  // show if number is greater than 50
-  numberGreaterThan50: function () {
-    var number = $(this).find('.number').text();
-    return parseInt(number, 10) > 50;
-  },
-  // show if name ends with -ium
-  ium: function () {
-    var name = $(this).find('.name').text();
-    return name.match(/ium$/);
-  }
-}; // bind filter button click
 
-$('.filters-button-group').on('click', 'button', function () {
-  var filterValue = $(this).attr('data-filter'); // use filterFn if matches value
+  $('.burger-btn').on('click', function () {
+    $('.top-menu').toggleClass('mobile-menu');
+    $('.span-middle').toggleClass('span-middle_hidden');
+    $('.burger-container .burger-btn span').toggleClass('span_active');
 
-  filterValue = filterFns[filterValue] || filterValue;
-  $grid.isotope({
-    filter: filterValue
-  });
-}); // change is-checked class on buttons
+    if ($(window).scrollTop() > 250 && !$('.top-menu').hasClass('mobile-menu')) {
+      $('.mobile-menu-bg').addClass('mobile-menu-bg-scroll');
+    } else {
+      $('.mobile-menu-bg').removeClass('mobile-menu-bg-scroll');
+    }
+  }); // background for menu on scroll
 
-$('.button-group').each(function (i, buttonGroup) {
-  var $buttonGroup = $(buttonGroup);
-  $buttonGroup.on('click', 'button', function () {
-    $buttonGroup.find('.is-checked').removeClass('is-checked');
-    $(this).addClass('is-checked');
-  });
-}); // Smooth Scroll Anchor
+  $(window).scroll(function () {
+    if ($(window).scrollTop() > 250 && !$('.top-menu').hasClass('mobile-menu')) {
+      $(".mobile-menu-bg").addClass('mobile-menu-bg-scroll');
+    } else {
+      $(".mobile-menu-bg").removeClass('mobile-menu-bg-scroll');
+    }
+  }); //	Filter
+  // init Isotope
 
-$('.anchor a').on('click', function (e) {
-  if (this.hash != '') {
-    const hash = this.hash;
-    $('html, body').animate({
-      scrollTop: $(hash).offset().top
-    }, 800);
-  }
-}); //  Menu on scroll
+  var $grid = $('.grids').isotope({
+    itemSelector: '.works-item',
+    layoutMode: 'fitRows'
+  }); // filter functions
 
-$(document).ready(function () {
+  var filterFns = {
+    // show if number is greater than 50
+    numberGreaterThan50: function () {
+      var number = $(this).find('.number').text();
+      return parseInt(number, 10) > 50;
+    },
+    // show if name ends with -ium
+    ium: function () {
+      var name = $(this).find('.name').text();
+      return name.match(/ium$/);
+    }
+  }; // bind filter button click
+
+  $('.filters-button-group').on('click', 'button', function () {
+    var filterValue = $(this).attr('data-filter'); // use filterFn if matches value
+
+    filterValue = filterFns[filterValue] || filterValue;
+    $grid.isotope({
+      filter: filterValue
+    });
+  }); // change is-checked class on buttons
+
+  $('.button-group').each(function (i, buttonGroup) {
+    var $buttonGroup = $(buttonGroup);
+    $buttonGroup.on('click', 'button', function () {
+      $buttonGroup.find('.is-checked').removeClass('is-checked');
+      $(this).addClass('is-checked');
+    });
+  }); //	Filter Handmade
+
+  let filter = $('[data-filter]');
+  filter.on('click', function () {
+    let cat = $(this).data('filter');
+    $('[data-cat]').each(function () {
+      let workCat = $(this).data('cat');
+
+      if (workCat != cat) {
+        $(this).addClass('hide');
+      } else {
+        $(this).removeClass('hide');
+      }
+    });
+    $('.button').each(function () {
+      if ($(this).data("filter") == cat) {
+        $(this).addClass('is-active');
+      } else {
+        $(this).removeClass('is-active');
+      }
+    });
+  }); // Smooth Scroll Anchor
+
+  $('.anchor a').on('click', function (e) {
+    if (this.hash != '') {
+      const hash = this.hash;
+      $('html, body').animate({
+        scrollTop: $(hash).offset().top
+      }, 800);
+      $('.top-menu').removeClass('mobile-menu');
+      $('.span-middle').removeClass('span-middle_hidden');
+      $('.burger-container .burger-btn span').removeClass('span_active');
+    }
+  }); //  Menu on scroll
+
   $(window).scroll(function () {
     if ($(window).scrollTop() > 100 && $(window).width() > 414) {
       $(".top-menu").addClass('top-menu-active');
     } else {
       $(".top-menu").removeClass('top-menu-active');
     }
+  }); // change price btn
+
+  $('.monthly').on('click', function () {
+    $('.yearly').removeClass('period-active');
+    $('.monthly').addClass('period-active');
+    $('.pricing-item-1 p').text('$10');
+    $('.pricing-item-2 p').text('$40');
+    $('.pricing-item-3 p').text('$80');
+    $('.pricing-item span').text('/mo');
   });
+  $('.yearly').on('click', function () {
+    $('.monthly').removeClass('period-active');
+    $('.yearly').addClass('period-active');
+    $('.pricing-item-1 p').text('$90');
+    $('.pricing-item-2 p').text('$350');
+    $('.pricing-item-3 p').text('$800');
+    $('.pricing-item span').text('/yo');
+  }); // faq
+
+  var q = document.getElementsByClassName("question");
+  var i;
+
+  for (i = 0; i < q.length; i++) {
+    q[i].addEventListener("click", function () {
+      this.classList.toggle("question-active");
+      var answer = this.nextElementSibling;
+      var plus = this.querySelector('.plus-minus');
+
+      if (answer.style.maxHeight) {
+        answer.style.maxHeight = null;
+      } else {
+        answer.classList.toggle("answer-active");
+        plus.classList.toggle("plus-minus-active");
+      }
+    });
+  }
 });
